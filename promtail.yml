@@ -1,0 +1,36 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: C:\temp\positions.yaml
+
+clients:
+  - url: http://0.0.0.0:3100/loki/api/v1/push
+
+scrape_configs:
+- job_name: branches
+  pipeline_stages:
+  - output:
+      source: message
+      action_on_failure: skip
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      service: branches
+      host: server-01
+      __path__: C:\logs\branches\**\*.log
+
+- job_name: calypso-adapter
+  pipeline_stages:
+  - output:
+      source: message
+      action_on_failure: skip
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      service: calypso-adapter
+      host: server-01
+      __path__: C:\logs\calypso_adapter\*.log
